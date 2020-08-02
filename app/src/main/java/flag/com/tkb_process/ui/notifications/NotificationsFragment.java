@@ -1,16 +1,20 @@
 package flag.com.tkb_process.ui.notifications;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -38,6 +42,7 @@ public class NotificationsFragment extends Fragment {
     MySQLiteHelper dbHelper;
     int flag=1;
     int[] Mon={31,28,31,30,31,30,31,31,30,31,30,31};
+    int now=0;
     com.github.mikephil.charting.charts.LineChart lineChart=null;
     private NotificationsViewModel notificationsViewModel;
 
@@ -72,10 +77,32 @@ public class NotificationsFragment extends Fragment {
                 c=db.rawQuery("SELECT Y_M FROM Course_sub WHERE complete = '完成' AND Y_M = '"+Y_M+"'",null);
                 c.moveToFirst();
                 int total=20;
+                //db.execSQL("drop table if exists Mon_goal");
+                db.execSQL("CREATE TABLE IF NOT EXISTS Mon_goal(goal int,id int)");
+
+                Cursor G=db.rawQuery("SELECT * FROM Mon_goal",null);
+                G.moveToFirst();
+                if(G.getCount()==0){
+                    ContentValues cv = new ContentValues();
+                    cv.put("goal", 20);
+                    cv.put("id", 1);
+                    db.insert("Mon_goal", null, cv);
+                    G=db.rawQuery("SELECT * FROM Mon_goal",null);
+                }
+                now=c.getCount(); G.moveToFirst();
+                total=Integer.parseInt(G.getString(0));
                 TextView tv=(TextView)getView().findViewById(R.id.tv1);
                 tv.setText("本月當前修課數/目標修課數:   "+Integer.toString(c.getCount())+"/"+Integer.toString(total));
                 TextView tv2=(TextView)getView().findViewById(R.id.textView18);
                 tv2.setText("這個月還剩下"+Integer.toString(Mon[month]-day)+"天");
+
+                final TextView change =(TextView)getView().findViewById(R.id.change);
+                change.setOnClickListener( new  View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        change_click();
+                    }
+                });
 
                 //設定圖表
                 lineChart=getView().findViewById(R.id.lineChart);
@@ -138,6 +165,9 @@ public class NotificationsFragment extends Fragment {
                 pro.setText(process);
                 TextView com=(TextView)v2.findViewById(R.id.textView11);
                 com.setText(complete);
+                if(!complete.equals("完成")){
+                    com.setTextSize(14);
+                }
                 TextView DDate=(TextView)v2.findViewById(R.id.textView12);
                 DDate.setText("上課日期:  "+date);
                 Cursor c=db.rawQuery("SELECT * FROM Course_sub WHERE date= '"+date+"' AND _Name = '"+Name+"' AND complete = '"+complete+"'" ,null);
@@ -160,7 +190,6 @@ public class NotificationsFragment extends Fragment {
             }
         });
     }
-
     public void history_click(){
         if(flag==1&&lineChart!=null){
             LinearLayout LL = (LinearLayout)getView().findViewById(R.id.linearLayout2);
@@ -171,13 +200,11 @@ public class NotificationsFragment extends Fragment {
             lineChart = new com.github.mikephil.charting.charts.LineChart(getActivity());
             LinearLayout LL = (LinearLayout)getView().findViewById(R.id.linearLayout2);
             lineChart.setBackgroundColor(Color.WHITE);
-            LL.addView(lineChart, LinearLayout.LayoutParams.MATCH_PARENT,550);
+            LL.addView(lineChart, LinearLayout.LayoutParams.MATCH_PARENT,400);
             graph();
             flag=1;
         }
     }
-
-
     public void graph(){
         //  設定圖表內容
         //設定數據
@@ -227,5 +254,48 @@ public class NotificationsFragment extends Fragment {
         leftAxis.setAxisMinimum(0);//Y軸標籤最小值
         YAxis rightAxis = lineChart.getAxisRight();//獲取右側的軸線
         rightAxis.setEnabled(false);//不顯示右側Y軸
+    }
+    public void change_click(){
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        final View v2 = inflater.inflate(R.layout.change_goal, null);
+        new AlertDialog.Builder(getActivity())
+                .setView(v2)
+
+                .setTitle("修改目標修課數")
+                .setNegativeButton("取消修改", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setPositiveButton("確定修改", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EditText et=(EditText)v2.findViewById(R.id.editText4);
+                        String Digit = "[0-9]+";
+                        if(!et.getText().toString().matches(Digit)){
+                            new AlertDialog.Builder(getActivity())
+                                    .setIcon(R.drawable.ic_launcher_background)
+                                    .setTitle("Message")
+                                    .setMessage("目標修課數必須填數字呦(*´▽`*)")
+                                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                        }
+                                    })
+                                    .show();
+                        }
+                        else {
+                            ContentValues cv = new ContentValues();
+                            cv.put("goal", Integer.parseInt(et.getText().toString()));
+                            db.update("Mon_goal",cv,"id = 1",null);
+                            Cursor G=db.rawQuery("SELECT * FROM Mon_goal",null);
+                            G.moveToFirst();
+                            int total=Integer.parseInt(G.getString(0));
+                            TextView tv=(TextView)getView().findViewById(R.id.tv1);
+                            tv.setText("本月當前修課數/目標修課數:   "+Integer.toString(now)+"/"+Integer.toString(total));
+                        }
+                    }
+                })
+                .show();
     }
 }
