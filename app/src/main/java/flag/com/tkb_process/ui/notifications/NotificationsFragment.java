@@ -260,7 +260,7 @@ public class NotificationsFragment extends Fragment {
         final View v2 = inflater.inflate(R.layout.change_goal, null);
         new AlertDialog.Builder(getActivity())
                 .setView(v2)
-
+                .setIcon(R.drawable.ic_launcher_background)
                 .setTitle("修改目標修課數")
                 .setNegativeButton("取消修改", new DialogInterface.OnClickListener() {
                     @Override

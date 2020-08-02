@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 
@@ -39,7 +41,7 @@ public class HomeFragment extends Fragment {
     String Y_M,complete,Name;
     private SQLiteDatabase db;
     MySQLiteHelper dbHelper;
-
+    ArrayList<String> items =new ArrayList<>();
     private HomeViewModel homeViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -77,9 +79,16 @@ public class HomeFragment extends Fragment {
 
                 //課程選單
                 spinner2 = getView().findViewById(R.id.course);
-                final String[] items = new String[]{
+                /*final String[] items = new String[]{
                         "請選擇課程: ", "作業系統", " 線性代數", "演算法","離散數學","資料結構","計算機組織"
-                };
+                };*/
+                Cursor course=db.rawQuery("SELECT _Name FROM Course",null);
+                items.add("請選擇課程: ");
+                course.moveToFirst();
+                for(int i=0;i<course.getCount();i++){
+                    items.add(course.getString(0));
+                    course.moveToNext();
+                }
                 Name="請選擇課程: ";
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, items);
                 spinner2.setAdapter(adapter);
@@ -87,13 +96,14 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         Log.v("item", (String) parent.getItemAtPosition(position));
-                        Name=items[position];
+                        Name=items.get(position);
                     }
 
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {
                     }
                 });
+
 
                 //進度選單
                 spinner = getView().findViewById(R.id.pro_spinner);
@@ -297,7 +307,12 @@ public class HomeFragment extends Fragment {
                 .setIcon(R.drawable.ic_launcher_background)
                 .setTitle("新增課程")
                 .setView(v)
-                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                .setNegativeButton("取消新增", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setPositiveButton("確定新增", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     EditText c_Name=(EditText)v.findViewById(R.id.C_name);
@@ -335,6 +350,15 @@ public class HomeFragment extends Fragment {
                         cv.put("total_minus", 0);
                         cv.put("note", c_note.getText().toString());
                         db.insert("Course", null, cv);
+
+                        Cursor course=db.rawQuery("SELECT _Name FROM Course",null);
+                        items.clear();
+                        items.add("請選擇課程: ");
+                        course.moveToFirst();
+                        for(int i=0;i<course.getCount();i++){
+                            items.add(course.getString(0));
+                            course.moveToNext();
+                        }
                     }
 
                     }
