@@ -173,7 +173,7 @@ public class HomeFragment extends Fragment {
                         String ee=EE.getText().toString();
                         if(spinner2.getSelectedItemPosition()==0){
                             new AlertDialog.Builder(getActivity())
-                                    .setIcon(R.drawable.ic_launcher_background)
+                                    .setIcon(R.drawable.star)
                                     .setTitle("Message")
                                     .setMessage("要記得選擇課程喔")
                                     .setPositiveButton("ok", new DialogInterface.OnClickListener() {
@@ -185,7 +185,7 @@ public class HomeFragment extends Fragment {
                         }
                         else if(process.equals("")){
                             new AlertDialog.Builder(getActivity())
-                                    .setIcon(R.drawable.ic_launcher_background)
+                                    .setIcon(R.drawable.star)
                                     .setTitle("Message")
                                     .setMessage("堂數要記得填寫喔")
                                     .setPositiveButton("ok", new DialogInterface.OnClickListener() {
@@ -197,7 +197,7 @@ public class HomeFragment extends Fragment {
                         }
                         else if(complete.equals("其他")&&ee.equals("")){
                             new AlertDialog.Builder(getActivity())
-                                    .setIcon(R.drawable.ic_launcher_background)
+                                    .setIcon(R.drawable.star)
                                     .setTitle("Message")
                                     .setMessage("若進度選擇其他，後面的要記得填寫。")
                                     .setPositiveButton("ok", new DialogInterface.OnClickListener() {
@@ -210,7 +210,7 @@ public class HomeFragment extends Fragment {
                         else{
                             submit(process,date,score,note);
                             new AlertDialog.Builder(getActivity())
-                                    .setIcon(R.drawable.ic_launcher_background)
+                                    .setIcon(R.drawable.star)
                                     .setTitle("Message")
                                     .setMessage("學習記錄新增成功")
                                     .setPositiveButton("ok", new DialogInterface.OnClickListener() {
@@ -304,7 +304,7 @@ public class HomeFragment extends Fragment {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         final View v = inflater.inflate(R.layout.course_add, null);
         new AlertDialog.Builder(getActivity())
-                .setIcon(R.drawable.ic_launcher_background)
+                .setIcon(R.drawable.star)
                 .setTitle("新增課程")
                 .setView(v)
                 .setNegativeButton("取消新增", new DialogInterface.OnClickListener() {

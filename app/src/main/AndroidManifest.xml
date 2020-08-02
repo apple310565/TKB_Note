@@ -5,7 +5,7 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/mip"
-        android:label="@string/app_name"
+        android:label="數位學習進度管理小幫手"
         android:roundIcon="@drawable/mip"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
