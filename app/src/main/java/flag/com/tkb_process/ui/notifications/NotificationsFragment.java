@@ -29,6 +29,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.DefaultValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
 import java.util.ArrayList;
@@ -92,7 +93,7 @@ public class NotificationsFragment extends Fragment {
                 now=c.getCount(); G.moveToFirst();
                 total=Integer.parseInt(G.getString(0));
                 TextView tv=(TextView)getView().findViewById(R.id.tv1);
-                tv.setText("本月當前修課數/目標修課數:   "+Integer.toString(c.getCount())+"/"+Integer.toString(total));
+                tv.setText("☆ 本月當前修課數/目標修課數:   "+Integer.toString(c.getCount())+"/"+Integer.toString(total));
                 TextView tv2=(TextView)getView().findViewById(R.id.textView18);
                 tv2.setText("這個月還剩下"+Integer.toString(Mon[month]-day)+"天");
 
@@ -159,28 +160,20 @@ public class NotificationsFragment extends Fragment {
             public void onClick(View v) {
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
                 final View v2 = inflater.inflate(R.layout.course_d, null);
-                TextView v_N=(TextView)v2.findViewById(R.id.v_Name);
-                v_N.setText(Name);
-                TextView pro=(TextView)v2.findViewById(R.id.textView10);
-                pro.setText(process);
-                TextView com=(TextView)v2.findViewById(R.id.textView11);
-                com.setText(complete);
-                if(!complete.equals("完成")){
-                    com.setTextSize(14);
-                }
+
                 TextView DDate=(TextView)v2.findViewById(R.id.textView12);
                 DDate.setText("上課日期:  "+date);
-                Cursor c=db.rawQuery("SELECT * FROM Course_sub WHERE date= '"+date+"' AND _Name = '"+Name+"' AND complete = '"+complete+"'" ,null);
+                Cursor c=db.rawQuery("SELECT * FROM Course_sub WHERE process= '"+process+"' AND _Name = '"+Name+"' AND complete = '"+complete+"'" ,null);
                 c.moveToFirst();
                 TextView score=(TextView)v2.findViewById(R.id.textView14);
                 score.setText("學習成效:  "+c.getString(5)+"/5");
                 TextView note=(TextView)v2.findViewById(R.id.textView17);
                 note.setText(c.getString(6));
                 if(note.getText().toString().equals(""))note.setText("你並沒有留下紀錄喔。");
-
-
                 new AlertDialog.Builder(getActivity())
                         .setView(v2)
+                        .setIcon(R.drawable.star)
+                        .setTitle(Name+" |  "+process+"  "+complete)
                         .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -224,7 +217,7 @@ public class NotificationsFragment extends Fragment {
             else {
                 values.add(new Entry(j, times));
                 label.add(pre+"月");
-                j++;times=0;pre=tmp.getString(0);
+                j++;times=1;pre=tmp.getString(0);
             }
             tmp.moveToNext();
         }
@@ -241,6 +234,7 @@ public class NotificationsFragment extends Fragment {
         set.setCircleRadius(6);//圓點大小
         set.setDrawValues(true);//不顯示座標點對應Y軸的數字(預設顯示)
         set.setValueTextSize(15);
+        set.setValueFormatter(new DefaultValueFormatter(0));//座標點數字的小數位數0位
         LineData data = new LineData(set);
         lineChart.setData(data);//一定要放在最後
         lineChart.invalidate();//繪製圖表
@@ -249,6 +243,8 @@ public class NotificationsFragment extends Fragment {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);//X軸標籤顯示位置(預設顯示在上方，分為上方內/外側、下方內/外側及上下同時顯示)
         xAxis.setTextSize(12);//X軸標籤大小
         xAxis.setLabelCount(j);//X軸標籤個數
+        xAxis.setSpaceMin(0.5f);//折線起點距離左側Y軸距離
+        xAxis.setSpaceMax(0.5f);//折線終點距離右側Y軸距離
         xAxis.setValueFormatter(new IndexAxisValueFormatter(label));
         YAxis leftAxis = lineChart.getAxisLeft();//獲取左側的軸線
         leftAxis.setAxisMinimum(0);//Y軸標籤最小值

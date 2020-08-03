@@ -157,18 +157,9 @@ public class DashboardFragment extends Fragment {
             public void onClick(View v) {
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
                 final View v2 = inflater.inflate(R.layout.course_d, null);
-                TextView v_N=(TextView)v2.findViewById(R.id.v_Name);
-                v_N.setText(Name);
-                TextView pro=(TextView)v2.findViewById(R.id.textView10);
-                pro.setText(process);
-                TextView com=(TextView)v2.findViewById(R.id.textView11);
-                com.setText(complete);
-                if(!complete.equals("完成")){
-                    com.setTextSize(14);
-                }
                 TextView DDate=(TextView)v2.findViewById(R.id.textView12);
                 DDate.setText("上課日期:  "+date);
-                Cursor c=db.rawQuery("SELECT * FROM Course_sub WHERE date= '"+date+"' AND _Name = '"+Name+"' AND complete = '"+complete+"'" ,null);
+                Cursor c=db.rawQuery("SELECT * FROM Course_sub WHERE process= '"+process+"' AND _Name = '"+Name+"' AND complete = '"+complete+"'" ,null);
                 c.moveToFirst();
                 TextView score=(TextView)v2.findViewById(R.id.textView14);
                 score.setText("學習成效:  "+c.getString(5)+"/5");
@@ -179,6 +170,8 @@ public class DashboardFragment extends Fragment {
 
                 new AlertDialog.Builder(getActivity())
                         .setView(v2)
+                        .setIcon(R.drawable.star)
+                        .setTitle(Name+" |  "+process+"  "+complete)
                         .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
