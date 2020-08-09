@@ -73,8 +73,10 @@ public class NotificationsFragment extends Fragment {
                 Calendar calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
-                final int day = calendar.get(Calendar.DAY_OF_MONTH);
-                String Y_M= String.valueOf(year) + "/" + String.valueOf(month + 1);
+                final int day = calendar.get(Calendar.DAY_OF_MONTH);;
+                String Y_M= String.valueOf(year) + "/" ;
+                if(month + 1<10)Y_M+="0";
+                Y_M+= String.valueOf(month + 1);
                 c=db.rawQuery("SELECT Y_M FROM Course_sub WHERE complete = '完成' AND Y_M = '"+Y_M+"'",null);
                 c.moveToFirst();
                 int total=20;

@@ -152,7 +152,8 @@
                 android:layout_weight="1"
                 android:text="TextView"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="#6E6E6E" />
+                android:textColor="#6E6E6E"
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/datepicker"

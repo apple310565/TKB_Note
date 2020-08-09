@@ -58,16 +58,31 @@ public class HomeFragment extends Fragment {
 
                 dbHelper = new MySQLiteHelper(getActivity(),"Course_sub",null,1);
                 db = dbHelper.getWritableDatabase();
-
+                //up();
                 //選日期
                 Calendar calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
                 final int day = calendar.get(Calendar.DAY_OF_MONTH);
-                Y_M= String.valueOf(year) + "/" + String.valueOf(month + 1);
+
                 String dateTime = String.valueOf(year) + "/" + String.valueOf(month + 1) + "/" + String.valueOf(day);
                 TextView date = getView().findViewById(R.id.date);
                 date.setText(dateTime);
+
+                String []a;
+                int flag=0;
+                String tmp="";
+                a=dateTime.split("/");
+                tmp+=a[0]+"/";
+                if(a[1].length()<2){tmp+="0";flag=1;}
+                tmp+=a[1]+"/";
+                if(a[2].length()<2){tmp+="0";flag=1;}
+                tmp+=a[2];
+                date.setText(tmp);
+
+                String []x=tmp.split("/");
+                Y_M=x[0]+"/"+x[1];
+
 
                 Button Datepick =(Button)getView().findViewById(R.id.datepicker);
                 Datepick.setOnClickListener( new  View.OnClickListener() {
@@ -233,7 +248,6 @@ public class HomeFragment extends Fragment {
 
 
     }
-
     public void datePicker() {
         TextView date = getView().findViewById(R.id.date);
         Calendar calendar = Calendar.getInstance();
@@ -244,13 +258,23 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 String dateTime = String.valueOf(year) + "/" + String.valueOf(month + 1) + "/" + String.valueOf(dayOfMonth);
-                Y_M=String.valueOf(year) + "/" + String.valueOf(month + 1);
                 TextView date = getView().findViewById(R.id.date);
                 date.setText(dateTime);
+                String []a;
+                int flag=0;
+                String tmp="";
+                a=dateTime.split("/");
+                tmp+=a[0]+"/";
+                if(a[1].length()<2){tmp+="0";flag=1;}
+                tmp+=a[1]+"/";
+                if(a[2].length()<2){tmp+="0";flag=1;}
+                tmp+=a[2];
+                date.setText(tmp);
+                String []x=tmp.split("/");
+                Y_M=x[0]+"/"+x[1];
             }
         }, year, month, day).show();
     }
-
     public void  remove(){
         spinner.setSelection(0);
         spinner2.setSelection(0);
@@ -267,8 +291,19 @@ public class HomeFragment extends Fragment {
         String dateTime = String.valueOf(year) + "/" + String.valueOf(month + 1) + "/" + String.valueOf(day);
         TextView date = getView().findViewById(R.id.date);
         date.setText(dateTime);
+        String []a;
+        int flag=0;
+        String tmp="";
+        a=dateTime.split("/");
+        tmp+=a[0]+"/";
+        if(a[1].length()<2){tmp+="0";flag=1;}
+        tmp+=a[1]+"/";
+        if(a[2].length()<2){tmp+="0";flag=1;}
+        tmp+=a[2];
+        date.setText(tmp);
+        String []x=tmp.split("/");
+        Y_M=x[0]+"/"+x[1];
     }
-
     public void submit(String process,String date,int score,String note){
         try {
             ContentValues cv = new ContentValues();
@@ -364,5 +399,30 @@ public class HomeFragment extends Fragment {
                     }
                 })
                 .show();
+    }
+    public void up(){
+        Cursor c=db.rawQuery("SELECT distinct date FROM Course_sub",null);
+        c.moveToFirst();
+        for(int i=0;i<c.getCount();i++){
+            String []a;
+            int flag=0;
+            String tmp="";
+            a=c.getString(0).split("/");
+            tmp+=a[0]+"/";
+            if(a[1].length()<2){tmp+="0";flag=1;}
+            tmp+=a[1]+"/";
+            if(a[2].length()<2){tmp+="0";flag=1;}
+            tmp+=a[2];
+            String []x=tmp.split("/");
+            String y_m=x[0]+"/"+x[1];
+            if(flag==1){
+                ContentValues cv = new ContentValues();
+                cv.put("date",tmp);
+                cv.put("Y_M",y_m);
+                db.update("Course_sub",cv,"date='"+c.getString(0)+"'" ,null);
+            }
+            c.moveToNext();
+        }
+
     }
 }

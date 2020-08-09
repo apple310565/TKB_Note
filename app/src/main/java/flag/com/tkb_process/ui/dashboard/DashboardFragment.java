@@ -135,7 +135,7 @@ public class DashboardFragment extends Fragment {
         Lout.addView(Lin,LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
         final TextView name = new TextView(getActivity());
         name.setGravity(Gravity.CENTER);
-        name.setText(Name+" |  ");name.setTextSize(18);
+        name.setText(Name+" |  ");name.setTextSize(16);
         LinearLayout L1 = new LinearLayout(getActivity());
         L1.setBackgroundColor(Color.parseColor("#C5C5C5"));
         LinearLayout L2 = new LinearLayout(getActivity());
@@ -143,9 +143,9 @@ public class DashboardFragment extends Fragment {
         final TextView Date = new TextView(getActivity());
         TextView Process = new TextView(getActivity());
         TextView Complete = new TextView(getActivity());
-        Date.setText(date+"  |  ");Date.setTextSize(18);Date.setGravity(Gravity.CENTER);
-        Process.setText(process+"  |  ");Process.setTextSize(18);Process.setGravity(Gravity.CENTER);
-        Complete.setText(complete);Complete.setTextSize(18);Complete.setGravity(Gravity.CENTER);
+        Date.setText(date+"  |  ");Date.setTextSize(16);Date.setGravity(Gravity.CENTER);
+        Process.setText(process+"  |  ");Process.setTextSize(16);Process.setGravity(Gravity.CENTER);
+        Complete.setText(complete);Complete.setTextSize(16);Complete.setGravity(Gravity.CENTER);
         L2.addView(name);L2.addView(Date);L2.addView(Process);L2.addView(Complete);
         //Lin.addView(name,LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
         //Lin.addView(L1,LinearLayout.LayoutParams.MATCH_PARENT,2);
